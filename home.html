@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home - Job Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Login / Register</h2>
+        <form method="POST" action="/home">
+            <input type="text" name="name" placeholder="Full Name" required><br>
+            <input type="email" name="email" placeholder="Email" required><br>
+            <input type="password" name="password" placeholder="Password" required><br>
+            <select name="role" required>
+                <option value="seeker">Job Seeker</option>
+                <option value="recruiter">Recruiter</option>
+            </select><br>
+            <button type="submit">Login / Register</button>
+        </form>
+
+        <h3>Registered Users</h3>
+        {% for u in user_read %}
+            <p>{{ u.name }} ({{ u.email }}) - {{ u.role }}</p>
+            <a href="/dashboard/{{ u.id }}"><button>Go to Dashboard</button></a>
+        {% endfor %}
+    </div>
+</body>
+</html>

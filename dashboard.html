@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h1>Welcome, {{ user.name }} ({{ user.role }})</h1>
+
+        {% if user.role == 'recruiter' %}
+            <h2>Post a Job</h2>
+            <form method="POST">
+                <input type="text" name="title" placeholder="Job Title" required><br>
+                <textarea name="description" placeholder="Job Description" required></textarea><br>
+                <input type="text" name="company" placeholder="Company Name" required><br>
+                <input type="text" name="salary" placeholder="Salary" required><br>
+                <button type="submit">Post Job</button>
+            </form>
+        {% endif %}
+
+        <h2>Available Jobs</h2>
+        {% for job in jobs %}
+            <div class="job-card">
+                <h3>{{ job.title }}</h3>
+                <p>{{ job.company }} | ₹{{ job.salary }}</p>
+                <p>{{ job.description }}</p>
+                <a href="/job/{{ job.id }}"><button>View Details</button></a>
+
+                {% if user.role == 'recruiter' and job.posted_by == user.name %}
+                    <a href="/edit_job/{{ job.id }}"><button>Edit</button></a>
+                    <form method="POST" action="/delete/job/{{ job.id }}">
+                        <button type="submit">Delete</button>
+                    </form>
+                {% elif user.role == 'seeker' %}
+                    <form method="POST" action="/apply/job/{{ job.id }}">
+                        <input type="hidden" name="user_id" value="{{ user.id }}">
+                        <button type="submit">Apply</button>
+                    </form>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <br>
+        <a href="/logout"><button>Logout</button></a>
+    </div>
+</body>
+</html>
